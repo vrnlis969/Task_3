@@ -6,8 +6,7 @@ import io.qameta.allure.Description;
 import io.qameta.allure.Story;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.ValueSource;
+import org.junit.jupiter.api.Test;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import pages.*;
@@ -25,7 +24,7 @@ public class LoginTest extends BaseTest {
     private String accessToken;
 
     @BeforeEach
-    public void setUp() {
+    public void createUser() {
         userClient = new UserClient();
         user = UserData.builder()
                 .email(RandomDataGenerator.generateEmail())
@@ -44,11 +43,9 @@ public class LoginTest extends BaseTest {
         }
     }
 
-    @ParameterizedTest
-    @ValueSource(strings = {"chrome", "yandex"})
+    @Test
     @Description("Вход через кнопку 'Войти в аккаунт' на главной")
-    public void loginViaMainPageButton(String browser) {
-        initDriver(browser);
+    public void loginViaMainPageButton() {
         MainPage mainPage = new MainPage(driver);
         mainPage.waitForPageLoaded();
         mainPage.clickLoginButton();
@@ -62,11 +59,9 @@ public class LoginTest extends BaseTest {
         assertTrue(mainPage.isPersonalAccountButtonDisplayed(), "Кнопка 'Личный кабинет' не отображается");
     }
 
-    @ParameterizedTest
-    @ValueSource(strings = {"chrome", "yandex"})
+    @Test
     @Description("Вход через кнопку 'Личный кабинет'")
-    public void loginViaPersonalAccountButton(String browser) {
-        initDriver(browser);
+    public void loginViaPersonalAccountButton() {
         MainPage mainPage = new MainPage(driver);
         mainPage.waitForPageLoaded();
         mainPage.clickPersonalAccountButton();
@@ -75,17 +70,14 @@ public class LoginTest extends BaseTest {
         loginPage.waitForPageLoaded();
         loginPage.login(user.getEmail(), user.getPassword());
 
-        // ИЗМЕНЕНО: после входа проверяем, что на главной появилась кнопка "Личный кабинет"
         WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
         wait.until(ExpectedConditions.visibilityOf(mainPage.getPersonalAccountButton()));
         assertTrue(mainPage.isPersonalAccountButtonDisplayed(), "Кнопка 'Личный кабинет' не отображается");
     }
 
-    @ParameterizedTest
-    @ValueSource(strings = {"chrome", "yandex"})
+    @Test
     @Description("Вход через кнопку в форме регистрации")
-    public void loginViaRegisterPage(String browser) {
-        initDriver(browser);
+    public void loginViaRegisterPage() {
         MainPage mainPage = new MainPage(driver);
         mainPage.waitForPageLoaded();
         mainPage.clickLoginButton();
@@ -106,11 +98,9 @@ public class LoginTest extends BaseTest {
         assertTrue(mainPage.isPersonalAccountButtonDisplayed(), "Кнопка 'Личный кабинет' не отображается");
     }
 
-    @ParameterizedTest
-    @ValueSource(strings = {"chrome", "yandex"})
+    @Test
     @Description("Вход через кнопку в форме восстановления пароля")
-    public void loginViaForgotPasswordPage(String browser) {
-        initDriver(browser);
+    public void loginViaForgotPasswordPage() {
         MainPage mainPage = new MainPage(driver);
         mainPage.waitForPageLoaded();
         mainPage.clickLoginButton();

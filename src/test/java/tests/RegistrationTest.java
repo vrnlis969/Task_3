@@ -5,8 +5,7 @@ import api.UserData;
 import io.qameta.allure.Description;
 import io.qameta.allure.Story;
 import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.ValueSource;
+import org.junit.jupiter.api.Test;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import pages.MainPage;
@@ -32,11 +31,9 @@ public class RegistrationTest extends BaseTest {
         }
     }
 
-    @ParameterizedTest
-    @ValueSource(strings = {"chrome", "yandex"})
+    @Test
     @Description("Успешная регистрация нового пользователя")
-    public void successfulRegistration(String browser) {
-        initDriver(browser);
+    public void successfulRegistration() {
         user = UserData.builder()
                 .email(RandomDataGenerator.generateEmail())
                 .password(RandomDataGenerator.generatePassword(6))
@@ -54,7 +51,6 @@ public class RegistrationTest extends BaseTest {
         registerPage.waitForPageLoaded();
         registerPage.register(user.getName(), user.getEmail(), user.getPassword());
 
-        // ИЗМЕНЕНО: проверяем, что перешли на страницу входа (кнопка "Войти" видна)
         WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
         wait.until(ExpectedConditions.visibilityOf(loginPage.getLoginButton()));
         assertTrue(loginPage.getLoginButton().isDisplayed(), "Кнопка 'Войти' не отображается");
@@ -65,11 +61,9 @@ public class RegistrationTest extends BaseTest {
         accessToken = response.jsonPath().getString("accessToken");
     }
 
-    @ParameterizedTest
-    @ValueSource(strings = {"chrome", "yandex"})
+    @Test
     @Description("Ошибка при регистрации с паролем менее 6 символов")
-    public void registrationWithShortPassword(String browser) {
-        initDriver(browser);
+    public void registrationWithShortPassword() {
         user = UserData.builder()
                 .email(RandomDataGenerator.generateEmail())
                 .password(RandomDataGenerator.generatePassword(5))
@@ -88,7 +82,6 @@ public class RegistrationTest extends BaseTest {
         registerPage.register(user.getName(), user.getEmail(), user.getPassword());
 
         assertTrue(registerPage.isErrorMessageDisplayed(), "Сообщение об ошибке не отобразилось");
-        // ИЗМЕНЕНО: проверяем, что URL остался на странице регистрации (можно оставить)
         assertTrue(driver.getCurrentUrl().contains("/register"), "Произошел переход, хотя ожидалась ошибка");
     }
 }

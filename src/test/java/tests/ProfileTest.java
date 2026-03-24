@@ -1,13 +1,14 @@
 package tests;
 
+import org.openqa.selenium.By;
+import org.openqa.selenium.WebElement;
 import api.UserClient;
 import api.UserData;
 import io.qameta.allure.Description;
 import io.qameta.allure.Story;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.ValueSource;
+import org.junit.jupiter.api.Test;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import pages.MainPage;
@@ -27,7 +28,7 @@ public class ProfileTest extends BaseTest {
     private String accessToken;
 
     @BeforeEach
-    public void setUp() {
+    public void createUser() {
         userClient = new UserClient();
         user = UserData.builder()
                 .email(RandomDataGenerator.generateEmail())
@@ -46,11 +47,9 @@ public class ProfileTest extends BaseTest {
         }
     }
 
-    @ParameterizedTest
-    @ValueSource(strings = {"chrome", "yandex"})
+    @Test
     @Description("Переход в личный кабинет по клику на 'Личный кабинет'")
-    public void goToProfile(String browser) {
-        initDriver(browser);
+    public void goToProfile() {
         MainPage mainPage = new MainPage(driver);
         mainPage.waitForPageLoaded();
         mainPage.clickLoginButton();
@@ -65,33 +64,39 @@ public class ProfileTest extends BaseTest {
         assertTrue(driver.getCurrentUrl().contains("/account/profile"), "Не перешли в личный кабинет");
     }
 
-    @ParameterizedTest
-    @ValueSource(strings = {"chrome", "yandex"})
+    @Test
     @Description("Переход из личного кабинета в конструктор по клику на 'Конструктор'")
-    public void goToConstructorViaLink(String browser) {
-        initDriver(browser);
+    public void goToConstructorViaLink() {
         MainPage mainPage = new MainPage(driver);
         mainPage.waitForPageLoaded();
         mainPage.clickLoginButton();
         LoginPage loginPage = new LoginPage(driver);
         loginPage.waitForPageLoaded();
         loginPage.login(user.getEmail(), user.getPassword());
-        mainPage.clickPersonalAccountButton();
 
+        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(5));
+        try {
+            WebElement overlay = driver.findElement(By.xpath("//div[contains(@class, 'Modal_modal_overlay')]"));
+            if (overlay.isDisplayed()) {
+                overlay.click();
+            }
+        } catch (Exception e) {
+            // Модальное окно не найдено – продолжаем
+        }
+
+        mainPage.clickPersonalAccountButton();
         ProfilePage profilePage = new ProfilePage(driver);
         profilePage.waitForPageLoaded();
         profilePage.clickConstructorLink();
 
-        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
+        wait = new WebDriverWait(driver, Duration.ofSeconds(10));
         wait.until(ExpectedConditions.visibilityOf(mainPage.getPersonalAccountButton()));
         assertTrue(mainPage.isPersonalAccountButtonDisplayed(), "Кнопка 'Личный кабинет' не отображается");
     }
 
-    @ParameterizedTest
-    @ValueSource(strings = {"chrome", "yandex"})
+    @Test
     @Description("Переход из личного кабинета в конструктор по клику на логотип")
-    public void goToConstructorViaLogo(String browser) {
-        initDriver(browser);
+    public void goToConstructorViaLogo() {
         MainPage mainPage = new MainPage(driver);
         mainPage.waitForPageLoaded();
         mainPage.clickLoginButton();
@@ -109,11 +114,9 @@ public class ProfileTest extends BaseTest {
         assertTrue(mainPage.isPersonalAccountButtonDisplayed(), "Кнопка 'Личный кабинет' не отображается");
     }
 
-    @ParameterizedTest
-    @ValueSource(strings = {"chrome", "yandex"})
+    @Test
     @Description("Выход из аккаунта по кнопке 'Выйти' в личном кабинете")
-    public void logout(String browser) {
-        initDriver(browser);
+    public void logout() {
         MainPage mainPage = new MainPage(driver);
         mainPage.waitForPageLoaded();
         mainPage.clickLoginButton();
@@ -126,7 +129,7 @@ public class ProfileTest extends BaseTest {
         profilePage.waitForPageLoaded();
         profilePage.clickLogoutButton();
 
-        // ИЗМЕНЕНО: после выхода создаём новый объект LoginPage и проверяем кнопку "Войти"
+        // После выхода должны оказаться на странице входа
         LoginPage loginPageAfterLogout = new LoginPage(driver);
         loginPageAfterLogout.waitForPageLoaded();
         assertTrue(loginPageAfterLogout.getLoginButton().isDisplayed(), "Кнопка 'Войти' не отображается");

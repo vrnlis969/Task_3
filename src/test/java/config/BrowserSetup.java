@@ -15,9 +15,15 @@ public class BrowserSetup {
                 options.addArguments("--remote-allow-origins=*");
                 return new ChromeDriver(options);
             case "yandex":
-                // Указываем версию браузера (144), чтобы WebDriverManager скачал совместимый драйвер
+                // Получаем путь к Яндекс.Браузеру из системного свойства или переменной окружения
+                String yandexPath = System.getProperty("yandex.browser.path");
+                if (yandexPath == null) {
+                    yandexPath = System.getenv("YANDEX_BROWSER_PATH");
+                }
+                if (yandexPath == null) {
+                    throw new IllegalArgumentException("Путь к Яндекс.Браузеру не задан. Укажите через -Dyandex.browser.path или переменную окружения YANDEX_BROWSER_PATH");
+                }
                 WebDriverManager.chromedriver().browserVersion("144").setup();
-                String yandexPath = "C:\\Users\\vrnli\\AppData\\Local\\Yandex\\YandexBrowser\\Application\\browser.exe";
                 ChromeOptions yandexOptions = new ChromeOptions();
                 yandexOptions.setBinary(yandexPath);
                 yandexOptions.addArguments("--remote-allow-origins=*");

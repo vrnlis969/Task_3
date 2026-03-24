@@ -82,6 +82,7 @@
                         -javaagent:"${settings.localRepository}/org/aspectj/aspectjweaver/${aspectj.version}/aspectjweaver-${aspectj.version}.jar"
                     </argLine>
                     <systemPropertyVariables>
+                        <yandex.browser.path>C:/Users/vrnli/AppData/Local/Yandex/YandexBrowser/Application/browser.exe</yandex.browser.path>
                         <allure.results.directory>${project.build.directory}/allure-results</allure.results.directory>
                     </systemPropertyVariables>
                 </configuration>

@@ -2,8 +2,7 @@ package tests;
 
 import io.qameta.allure.Description;
 import io.qameta.allure.Story;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.ValueSource;
+import org.junit.jupiter.api.Test;
 import pages.MainPage;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -11,33 +10,27 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 @Story("Конструктор бургеров")
 public class ConstructorTest extends BaseTest {
 
-    @ParameterizedTest
-    @ValueSource(strings = {"chrome", "yandex"})
+    @Test
     @Description("Переход к разделу 'Булки'")
-    public void switchToBunsTab(String browser) {
-        initDriver(browser);
+    public void switchToBunsTab() {
         MainPage mainPage = new MainPage(driver);
         mainPage.waitForPageLoaded();
-        mainPage.clickBunsTab();  // теперь клик через JavaScript
+        mainPage.clickBunsTab();
         assertEquals("Булки", mainPage.getActiveTabText(), "Активный таб не 'Булки'");
     }
 
-    @ParameterizedTest
-    @ValueSource(strings = {"chrome", "yandex"})
+    @Test
     @Description("Переход к разделу 'Соусы'")
-    public void switchToSaucesTab(String browser) {
-        initDriver(browser);
+    public void switchToSaucesTab() {
         MainPage mainPage = new MainPage(driver);
         mainPage.waitForPageLoaded();
         mainPage.clickSaucesTab();
         assertEquals("Соусы", mainPage.getActiveTabText(), "Активный таб не 'Соусы'");
     }
 
-    @ParameterizedTest
-    @ValueSource(strings = {"chrome", "yandex"})
+    @Test
     @Description("Переход к разделу 'Начинки'")
-    public void switchToFillingsTab(String browser) {
-        initDriver(browser);
+    public void switchToFillingsTab() {
         MainPage mainPage = new MainPage(driver);
         mainPage.waitForPageLoaded();
         mainPage.clickFillingsTab();
