@@ -15,7 +15,6 @@ public class MainPage extends BasePage {
     @FindBy(xpath = "//p[text()='Личный Кабинет']")
     private WebElement personalAccountButton;
 
-    // ИЗМЕНЕНО: более надёжный локатор логотипа
     @FindBy(xpath = "//a[@href='/']")
     private WebElement logo;
 
@@ -30,6 +29,10 @@ public class MainPage extends BasePage {
 
     @FindBy(xpath = "//div[contains(@class, 'tab_tab_type_current')]")
     private WebElement activeTab;
+
+    // ДОБАВЛЕНО: локатор модального окна (overlay)
+    @FindBy(xpath = "//div[contains(@class, 'Modal_modal_overlay')]")
+    private WebElement modalOverlay;
 
     public MainPage(WebDriver driver) {
         super(driver);
@@ -55,7 +58,6 @@ public class MainPage extends BasePage {
         logo.click();
     }
 
-    // ИЗМЕНЕНО: клик через JavaScript, чтобы обойти перекрытие другими элементами
     @Step("Перейти в раздел 'Булки'")
     public void clickBunsTab() {
         ((JavascriptExecutor) driver).executeScript("arguments[0].click();", bunsTab);
@@ -76,7 +78,6 @@ public class MainPage extends BasePage {
         return activeTab.getText();
     }
 
-    // ДОБАВЛЕНО: метод для проверки видимости кнопки "Личный кабинет" (используется в тестах)
     public boolean isPersonalAccountButtonDisplayed() {
         try {
             return personalAccountButton.isDisplayed();
@@ -85,12 +86,23 @@ public class MainPage extends BasePage {
         }
     }
 
-    // ДОБАВЛЕНО: метод для получения кнопки "Войти" (если нужна внешняя проверка)
     public WebElement getLoginButton() {
         return loginButton;
     }
+
     public WebElement getPersonalAccountButton() {
         return personalAccountButton;
     }
 
+    // ДОБАВЛЕНО: метод для закрытия модального окна, если оно есть
+    @Step("Закрыть модальное окно, если оно присутствует")
+    public void closeModalIfPresent() {
+        try {
+            if (modalOverlay.isDisplayed()) {
+                modalOverlay.click();
+            }
+        } catch (Exception e) {
+            // Модальное окно не найдено или не отображается – ничего не делаем
+        }
+    }
 }

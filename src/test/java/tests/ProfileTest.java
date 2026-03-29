@@ -1,7 +1,5 @@
 package tests;
 
-import org.openqa.selenium.By;
-import org.openqa.selenium.WebElement;
 import api.UserClient;
 import api.UserData;
 import io.qameta.allure.Description;
@@ -74,22 +72,15 @@ public class ProfileTest extends BaseTest {
         loginPage.waitForPageLoaded();
         loginPage.login(user.getEmail(), user.getPassword());
 
-        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(5));
-        try {
-            WebElement overlay = driver.findElement(By.xpath("//div[contains(@class, 'Modal_modal_overlay')]"));
-            if (overlay.isDisplayed()) {
-                overlay.click();
-            }
-        } catch (Exception e) {
-            // Модальное окно не найдено – продолжаем
-        }
+        // Закрываем возможное модальное окно (метод из MainPage)
+        mainPage.closeModalIfPresent();
 
         mainPage.clickPersonalAccountButton();
         ProfilePage profilePage = new ProfilePage(driver);
         profilePage.waitForPageLoaded();
         profilePage.clickConstructorLink();
 
-        wait = new WebDriverWait(driver, Duration.ofSeconds(10));
+        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
         wait.until(ExpectedConditions.visibilityOf(mainPage.getPersonalAccountButton()));
         assertTrue(mainPage.isPersonalAccountButtonDisplayed(), "Кнопка 'Личный кабинет' не отображается");
     }
@@ -129,7 +120,6 @@ public class ProfileTest extends BaseTest {
         profilePage.waitForPageLoaded();
         profilePage.clickLogoutButton();
 
-        // После выхода должны оказаться на странице входа
         LoginPage loginPageAfterLogout = new LoginPage(driver);
         loginPageAfterLogout.waitForPageLoaded();
         assertTrue(loginPageAfterLogout.getLoginButton().isDisplayed(), "Кнопка 'Войти' не отображается");
