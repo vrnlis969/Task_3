@@ -12,7 +12,7 @@
         <maven.compiler.source>11</maven.compiler.source>
         <maven.compiler.target>11</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <aspectj.version>1.9.19</aspectj.version> <!-- для Allure -->
+        <aspectj.version>1.9.19</aspectj.version>
     </properties>
 
     <dependencies>
@@ -31,7 +31,7 @@
             <version>4.11.0</version>
         </dependency>
 
-        <!-- WebDriverManager (автоматическое управление драйверами) -->
+        <!-- WebDriverManager -->
         <dependency>
             <groupId>io.github.bonigarcia</groupId>
             <artifactId>webdrivermanager</artifactId>
@@ -47,7 +47,7 @@
             <scope>test</scope>
         </dependency>
 
-        <!-- REST Assured для API -->
+        <!-- REST Assured -->
         <dependency>
             <groupId>io.rest-assured</groupId>
             <artifactId>rest-assured</artifactId>
@@ -55,14 +55,14 @@
             <scope>test</scope>
         </dependency>
 
-        <!-- Jackson для работы с JSON -->
+        <!-- Jackson -->
         <dependency>
             <groupId>com.fasterxml.jackson.core</groupId>
             <artifactId>jackson-databind</artifactId>
             <version>2.15.2</version>
         </dependency>
 
-        <!-- Lombok для упрощения кода (геттеры, сеттеры, билдеры) -->
+        <!-- Lombok -->
         <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
@@ -82,6 +82,7 @@
                         -javaagent:"${settings.localRepository}/org/aspectj/aspectjweaver/${aspectj.version}/aspectjweaver-${aspectj.version}.jar"
                     </argLine>
                     <systemPropertyVariables>
+                        <yandex.browser.path>C:/Users/vrnli/AppData/Local/Yandex/YandexBrowser/Application/browser.exe</yandex.browser.path>
                         <allure.results.directory>${project.build.directory}/allure-results</allure.results.directory>
                     </systemPropertyVariables>
                 </configuration>
@@ -92,6 +93,13 @@
                         <version>${aspectj.version}</version>
                     </dependency>
                 </dependencies>
+            </plugin>
+
+            <!-- Плагин Allure для генерации отчёта -->
+            <plugin>
+                <groupId>io.qameta.allure</groupId>
+                <artifactId>allure-maven</artifactId>
+                <version>2.12.0</version>
             </plugin>
         </plugins>
     </build>
